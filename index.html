@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator</title>
+    <title>Modern Calculator</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f0f0f0;
+            background-color: #f4f4f4;
         }
 
         .calculator {
@@ -19,21 +19,21 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 300px; /* Adjust width for smaller screens */
-            max-width: 90%; /* Ensure it doesn't overflow on smaller screens */
+            width: 300px; /* Adjusted width */
+            max-width: 100%; /* For responsiveness */
         }
 
         .display {
             background-color: #eee;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 10px;
             text-align: right;
             font-size: 24px;
-            overflow: hidden; /* Prevents content from overflowing */
+            overflow: hidden;
             white-space: nowrap;
-            text-overflow: ellipsis; /* Adds '...' if text overflows */
+            text-overflow: ellipsis;
         }
 
         .buttons {
@@ -46,8 +46,8 @@
             background-color: #ddd;
             border: none;
             border-radius: 5px;
-            padding: 15px;
-            font-size: 20px;
+            padding: 15px; /* Increased padding */
+            font-size: 18px; /* Increased font size */
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
@@ -56,96 +56,174 @@
             background-color: #ccc;
         }
 
+        button:active {
+            background-color: #bbb;
+        }
+
         .operator {
-            background-color: #eee;
+            background-color: #3498db;
+            color: white;
         }
 
         .operator:hover {
-            background-color: #ddd;
+            background-color: #2980b9;
         }
 
         .clear {
-            background-color: #f44336;
+            background-color: #e74c3c;
             color: white;
         }
 
         .clear:hover {
-            background-color: #d32f2f;
+            background-color: #c0392b;
         }
 
         .equal {
-            background-color: #4CAF50;
+            grid-column: span 2; /* spans two columns */
+             background-color: #2ecc71;
             color: white;
         }
 
         .equal:hover {
-            background-color: #43A047;
+            background-color: #27ae60;
         }
-
     </style>
 </head>
 <body>
 
     <div class="calculator">
-        <div class="display" id="display">0</div>
-
+        <div class="display">0</div>
         <div class="buttons">
-            <button class="clear" onclick="clearDisplay()">C</button>
-            <button class="operator" onclick="appendDisplay('/')">/</button>
-            <button class="operator" onclick="appendDisplay('*')">*</button>
-            <button onclick="appendDisplay('7')">7</button>
-            <button onclick="appendDisplay('8')">8</button>
-            <button onclick="appendDisplay('9')">9</button>
-            <button class="operator" onclick="appendDisplay('-')">-</button>
-            <button onclick="appendDisplay('4')">4</button>
-            <button onclick="appendDisplay('5')">5</button>
-            <button onclick="appendDisplay('6')">6</button>
-            <button class="operator" onclick="appendDisplay('+')">+</button>
-            <button onclick="appendDisplay('1')">1</button>
-            <button onclick="appendDisplay('2')">2</button>
-            <button onclick="appendDisplay('3')">3</button>
-            <button class="equal" onclick="calculate()">=</button>
-            <button onclick="appendDisplay('0')">0</button>
-            <button onclick="appendDisplay('.')">.</button>
+            <button class="clear">C</button>
+            <button class="operator">/</button>
+            <button class="operator">*</button>
+            <button class="operator">-</button>
+
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button class="operator">+</button>
+
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+           
+
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>0</button>
+
+            <button>.</button>
+            <button class="equal">=</button>
+          
         </div>
     </div>
 
     <script>
-        let displayValue = '0';
+        const display = document.querySelector('.display');
+        const buttons = document.querySelectorAll('.buttons button');
 
-        function updateDisplay() {
-            document.getElementById('display').innerText = displayValue;
-        }
+        let currentInput = '';
+        let operator = null;
+        let previousValue = null;
 
-        function appendDisplay(value) {
-            if (displayValue === '0' && value !== '.') {
-                displayValue = value;
-            } else {
-                displayValue += value;
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.textContent;
+
+                if (isNaN(value) && value !== '.' && value !== '=') {
+                    handleOperator(value);
+                } else if (value === '.') {
+                    handleDecimal();
+                } else if (value === '=') {
+                    handleEqual();
+                } else {
+                    handleNumber(value);
+                }
+            });
+        });
+
+        function handleNumber(number) {
+            if (currentInput.length < 10) { // Limit input length
+                currentInput += number;
+                updateDisplay();
             }
+        }
+
+        function handleOperator(op) {
+            if (op === 'C') {
+                clearDisplay();
+                return;
+            }
+
+            if (previousValue === null) {
+                previousValue = parseFloat(currentInput);
+            } else if (currentInput) {
+                calculate();
+            }
+
+            operator = op;
+            currentInput = '';
             updateDisplay();
         }
 
-        function clearDisplay() {
-            displayValue = '0';
-            updateDisplay();
+        function handleDecimal() {
+            if (!currentInput.includes('.')) {
+                currentInput += '.';
+                updateDisplay();
+            }
+        }
+
+        function handleEqual() {
+            calculate();
+            operator = null;
         }
 
         function calculate() {
-            try {
-                displayValue = eval(displayValue);
-                if (!isFinite(displayValue)) {
-                    displayValue = 'Error';
-                }
-            } catch (error) {
-                displayValue = 'Error';
+            if (operator === null || previousValue === null) return;
+
+            const currentValue = parseFloat(currentInput);
+            let result;
+
+            switch (operator) {
+                case '+':
+                    result = previousValue + currentValue;
+                    break;
+                case '-':
+                    result = previousValue - currentValue;
+                    break;
+                case '*':
+                    result = previousValue * currentValue;
+                    break;
+                case '/':
+                    if (currentValue === 0) {
+                        alert("Cannot divide by zero!");
+                        clearDisplay();
+                        return;
+                    }
+                    result = previousValue / currentValue;
+                    break;
+                default:
+                    return;
             }
+
+            currentInput = String(result);
+            previousValue = null;
+            operator = null;
             updateDisplay();
         }
 
-        // Initial display update
-        updateDisplay();
-    </script>
+        function updateDisplay() {
+            display.textContent = currentInput || '0';
+        }
 
+        function clearDisplay() {
+            currentInput = '';
+            operator = null;
+            previousValue = null;
+            updateDisplay();
+        }
+    </script>
 </body>
 </html>
