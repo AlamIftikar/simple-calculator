@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Calculator</title>
+    <title>Calculator</title>
     <style>
         body {
-            font-family: sans-serif;
-            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            background-color: #f0f0f0;
         }
 
         .calculator {
             background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 300px;
+            width: 300px; /* Adjust width for smaller screens */
+            max-width: 90%; /* Ensure it doesn't overflow on smaller screens */
         }
 
         .display {
@@ -28,12 +28,12 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             text-align: right;
-            font-size: 2em;
-            overflow: hidden; /* Prevent overflow */
-            white-space: nowrap; /* Keep text on one line */
-            text-overflow: ellipsis; /* Add ellipsis if text overflows */
+            font-size: 24px;
+            overflow: hidden; /* Prevents content from overflowing */
+            white-space: nowrap;
+            text-overflow: ellipsis; /* Adds '...' if text overflows */
         }
 
         .buttons {
@@ -47,9 +47,9 @@
             border: none;
             border-radius: 5px;
             padding: 15px;
-            font-size: 1.5em;
+            font-size: 20px;
             cursor: pointer;
-            transition: background-color 0.2s ease;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -57,12 +57,11 @@
         }
 
         .operator {
-            background-color: #4CAF50;
-            color: white;
+            background-color: #eee;
         }
 
         .operator:hover {
-            background-color: #3e8e41;
+            background-color: #ddd;
         }
 
         .clear {
@@ -71,31 +70,43 @@
         }
 
         .clear:hover {
-            background-color: #da190b;
+            background-color: #d32f2f;
         }
+
+        .equal {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .equal:hover {
+            background-color: #43A047;
+        }
+
     </style>
 </head>
 <body>
+
     <div class="calculator">
         <div class="display" id="display">0</div>
+
         <div class="buttons">
             <button class="clear" onclick="clearDisplay()">C</button>
-            <button onclick="appendToDisplay('7')">7</button>
-            <button onclick="appendToDisplay('8')">8</button>
-            <button onclick="appendToDisplay('9')">9</button>
-            <button class="operator" onclick="appendToDisplay('/')">/</button>
-            <button onclick="appendToDisplay('4')">4</button>
-            <button onclick="appendToDisplay('5')">5</button>
-            <button onclick="appendToDisplay('6')">6</button>
-            <button class="operator" onclick="appendToDisplay('*')">*</button>
-            <button onclick="appendToDisplay('1')">1</button>
-            <button onclick="appendToDisplay('2')">2</button>
-            <button onclick="appendToDisplay('3')">3</button>
-            <button class="operator" onclick="appendToDisplay('-')">-</button>
-            <button onclick="appendToDisplay('0')">0</button>
-            <button onclick="appendToDisplay('.')">.</button>
-            <button class="operator" onclick="calculate()">=</button>
-            <button class="operator" onclick="appendToDisplay('+')">+</button>
+            <button class="operator" onclick="appendDisplay('/')">/</button>
+            <button class="operator" onclick="appendDisplay('*')">*</button>
+            <button onclick="appendDisplay('7')">7</button>
+            <button onclick="appendDisplay('8')">8</button>
+            <button onclick="appendDisplay('9')">9</button>
+            <button class="operator" onclick="appendDisplay('-')">-</button>
+            <button onclick="appendDisplay('4')">4</button>
+            <button onclick="appendDisplay('5')">5</button>
+            <button onclick="appendDisplay('6')">6</button>
+            <button class="operator" onclick="appendDisplay('+')">+</button>
+            <button onclick="appendDisplay('1')">1</button>
+            <button onclick="appendDisplay('2')">2</button>
+            <button onclick="appendDisplay('3')">3</button>
+            <button class="equal" onclick="calculate()">=</button>
+            <button onclick="appendDisplay('0')">0</button>
+            <button onclick="appendDisplay('.')">.</button>
         </div>
     </div>
 
@@ -106,7 +117,7 @@
             document.getElementById('display').innerText = displayValue;
         }
 
-        function appendToDisplay(value) {
+        function appendDisplay(value) {
             if (displayValue === '0' && value !== '.') {
                 displayValue = value;
             } else {
@@ -123,14 +134,18 @@
         function calculate() {
             try {
                 displayValue = eval(displayValue);
-                updateDisplay();
+                if (!isFinite(displayValue)) {
+                    displayValue = 'Error';
+                }
             } catch (error) {
                 displayValue = 'Error';
-                updateDisplay();
             }
+            updateDisplay();
         }
 
-        updateDisplay(); // Initialize display on page load
+        // Initial display update
+        updateDisplay();
     </script>
+
 </body>
 </html>
