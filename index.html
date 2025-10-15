@@ -18,29 +18,28 @@
         .calculator {
             background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             padding: 20px;
             width: 300px;
         }
 
-        .calculator-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-gap: 10px;
-        }
-
         .display {
-            grid-column: 1 / -1;
             background-color: #eee;
             border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
+            margin-bottom: 15px;
             text-align: right;
-            font-size: 24px;
-            margin-bottom: 10px;
-            overflow: hidden; /* Prevents content overflow */
-            white-space: nowrap; /* Prevents line breaks */
-            text-overflow: ellipsis; /* Adds ellipsis (...) if content overflows */
+            font-size: 2em;
+            overflow: hidden; /* Prevent overflow */
+            white-space: nowrap; /* Keep text on one line */
+            text-overflow: ellipsis; /* Add ellipsis if text overflows */
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
         }
 
         button {
@@ -48,7 +47,7 @@
             border: none;
             border-radius: 5px;
             padding: 15px;
-            font-size: 20px;
+            font-size: 1.5em;
             cursor: pointer;
             transition: background-color 0.2s ease;
         }
@@ -63,150 +62,75 @@
         }
 
         .operator:hover {
-            background-color: #43A047;
+            background-color: #3e8e41;
         }
 
         .clear {
             background-color: #f44336;
             color: white;
-            grid-column: 1 / 3; /* Span two columns */
         }
 
         .clear:hover {
-            background-color: #d32f2f;
+            background-color: #da190b;
         }
-
-        .equals {
-            background-color: #2196F3;
-            color: white;
-            grid-column: 3 / -1; /* Span two columns */
-        }
-
-        .equals:hover {
-            background-color: #1976D2;
-        }
-
     </style>
 </head>
 <body>
     <div class="calculator">
-        <div class="display">0</div>
-        <div class="calculator-grid">
-            <button class="clear">Clear</button>
-            <button class="operator">/</button>
-            <button>7</button>
-            <button>8</button>
-            <button>9</button>
-            <button class="operator">*</button>
-            <button>4</button>
-            <button>5</button>
-            <button>6</button>
-            <button class="operator">-</button>
-            <button>1</button>
-            <button>2</button>
-            <button>3</button>
-            <button class="operator">+</button>
-            <button>0</button>
-            <button>.</button>
-            <button class="equals">=</button>
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button class="operator" onclick="appendToDisplay('/')">/</button>
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button class="operator" onclick="appendToDisplay('*')">*</button>
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button class="operator" onclick="appendToDisplay('-')">-</button>
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button class="operator" onclick="calculate()">=</button>
+            <button class="operator" onclick="appendToDisplay('+')">+</button>
         </div>
     </div>
 
     <script>
-        const display = document.querySelector('.display');
-        const buttons = document.querySelectorAll('button');
+        let displayValue = '0';
 
-        let currentInput = '';
-        let operator = null;
-        let firstOperand = null;
+        function updateDisplay() {
+            document.getElementById('display').innerText = displayValue;
+        }
 
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                const buttonValue = button.textContent;
-
-                if (buttonValue === 'Clear') {
-                    clearDisplay();
-                } else if (['+', '-', '*', '/'].includes(buttonValue)) {
-                    handleOperator(buttonValue);
-                } else if (buttonValue === '=') {
-                    evaluate();
-                } else if (buttonValue === '.') {
-                    handleDecimal();
-                } else {
-                    handleNumber(buttonValue);
-                }
-            });
-        });
+        function appendToDisplay(value) {
+            if (displayValue === '0' && value !== '.') {
+                displayValue = value;
+            } else {
+                displayValue += value;
+            }
+            updateDisplay();
+        }
 
         function clearDisplay() {
-            currentInput = '';
-            operator = null;
-            firstOperand = null;
-            updateDisplay('0');
+            displayValue = '0';
+            updateDisplay();
         }
 
-        function handleNumber(number) {
-            currentInput += number;
-            updateDisplay(currentInput);
-        }
-
-        function handleOperator(op) {
-            if (currentInput === '') return;
-
-            if (firstOperand === null) {
-                firstOperand = parseFloat(currentInput);
-            } else if (operator) {
-                evaluate();
-                firstOperand = parseFloat(currentInput);
-            }
-            operator = op;
-            currentInput = '';
-        }
-
-        function handleDecimal() {
-            if (!currentInput.includes('.')) {
-                currentInput += '.';
-                updateDisplay(currentInput);
+        function calculate() {
+            try {
+                displayValue = eval(displayValue);
+                updateDisplay();
+            } catch (error) {
+                displayValue = 'Error';
+                updateDisplay();
             }
         }
 
-
-        function evaluate() {
-            if (operator === null || currentInput === '' || firstOperand === null) return;
-
-            const secondOperand = parseFloat(currentInput);
-            let result;
-
-            switch (operator) {
-                case '+':
-                    result = firstOperand + secondOperand;
-                    break;
-                case '-':
-                    result = firstOperand - secondOperand;
-                    break;
-                case '*':
-                    result = firstOperand * secondOperand;
-                    break;
-                case '/':
-                    if (secondOperand === 0) {
-                        result = 'Error';
-                    } else {
-                        result = firstOperand / secondOperand;
-                    }
-                    break;
-                default:
-                    return;
-            }
-
-            currentInput = String(result);
-            operator = null;
-            firstOperand = null;
-            updateDisplay(currentInput);
-        }
-
-        function updateDisplay(value) {
-            display.textContent = value;
-        }
+        updateDisplay(); // Initialize display on page load
     </script>
 </body>
 </html>
