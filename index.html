@@ -1,229 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Calculator</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f4f4f4;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Elegant Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #e8eefc;
+      --bg-end: #d6e2f9;
+      --card: rgba(255,255,255,0.95);
+      --shadow: 0 20px 40px rgba(0,0,0,0.12);
+      --text: #1f2d3d;
+      --muted: #6b7280;
+      --display-bg: linear-gradient(135deg, #ffffff 0%, #f2f5fb 100%);
+      --btn: #e9eefc;
+      --btn-shadow: 0 2px 0 rgba(0,0,0,0.04);
+    }
 
-        .calculator {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 300px; /* Adjusted width */
-            max-width: 100%; /* For responsiveness */
-        }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, Arial;
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% -10%, rgba(99,102,241,0.15), transparent 40%),
+                  radial-gradient(circle at 100% 0%, rgba(16,185,129,0.15), transparent 40%),
+                  linear-gradient(135deg, var(--bg-start), var(--bg-end));
+    }
 
-        .display {
-            background-color: #eee;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            text-align: right;
-            font-size: 24px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
+    .calculator {
+      width: min(420px, 92vw);
+      border-radius: 20px;
+      padding: 20px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,0.05);
+      backdrop-filter: saturate(1.2) blur(2px);
+    }
 
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-gap: 10px;
-        }
+    .display {
+      height: 68px;
+      border-radius: 12px;
+      background: var(--display-bg);
+      border: 1px solid #d8e1ec;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 28px;
+      font-weight: 600;
+      color: #1b2b43;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
 
-        button {
-            background-color: #ddd;
-            border: none;
-            border-radius: 5px;
-            padding: 15px; /* Increased padding */
-            font-size: 18px; /* Increased font size */
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 12px;
+    }
 
-        button:hover {
-            background-color: #ccc;
-        }
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.04s ease, background-color 0.2s ease;
+      background: linear-gradient(#f5f7fb, #e3eafc);
+      box-shadow: var(--btn-shadow);
+      color: #1f2d3d;
+    }
 
-        button:active {
-            background-color: #bbb;
-        }
+    button:focus-visible {
+      outline: 2px solid #4e9af9;
+      outline-offset: 2px;
+    }
 
-        .operator {
-            background-color: #3498db;
-            color: white;
-        }
+    button:hover {
+      transform: translateY(-1px);
+      background: linear-gradient(#f7f9ff, #e2e8ff);
+    }
 
-        .operator:hover {
-            background-color: #2980b9;
-        }
+    button:active {
+      transform: translateY(0);
+      background: linear-gradient(#e3eafc, #dde4ff);
+    }
 
-        .clear {
-            background-color: #e74c3c;
-            color: white;
-        }
+    .operator {
+      background: linear-gradient(135deg, #6a5af9 0%, #4b3ec6 100%);
+      color: #fff;
+    }
 
-        .clear:hover {
-            background-color: #c0392b;
-        }
+    .operator:hover {
+      background: linear-gradient(135deg, #7b63f9 0%, #5a41cf 100%);
+    }
 
-        .equal {
-            grid-column: span 2; /* spans two columns */
-             background-color: #2ecc71;
-            color: white;
-        }
+    .clear {
+      background: linear-gradient(135deg, #ff6b6b 0%, #e03131 100%);
+      color: #fff;
+    }
 
-        .equal:hover {
-            background-color: #27ae60;
-        }
-    </style>
+    .clear:hover {
+      background: linear-gradient(135deg, #ff8080 0%, #e64a4a 100%);
+    }
+
+    .equal {
+      grid-column: span 2;
+      background: linear-gradient(135deg, #2bd675 0%, #14a34a 100%);
+      color: #fff;
+    }
+
+    .equal:hover {
+      background: linear-gradient(135deg, #32e592 0%, #19a15e 100%);
+    }
+
+    @media (max-width: 420px) {
+      .display { font-size: 24px; height: 60px; }
+      button { padding: 14px; font-size: 17px; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="calculator">
-        <div class="display">0</div>
-        <div class="buttons">
-            <button class="clear">C</button>
-            <button class="operator">/</button>
-            <button class="operator">*</button>
-            <button class="operator">-</button>
+  <div class="calculator" aria-label="Elegant Calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons" role="group" aria-label="Calculator keypad">
+      <button class="clear" aria-label="Clear">C</button>
+      <button class="operator" aria-label="Divide">/</button>
+      <button class="operator" aria-label="Multiply">*</button>
+      <button class="operator" aria-label="Subtract">-</button>
 
-            <button>7</button>
-            <button>8</button>
-            <button>9</button>
-            <button class="operator">+</button>
+      <button>7</button>
+      <button>8</button>
+      <button>9</button>
+      <button class="operator" aria-label="Add">+</button>
 
-            <button>4</button>
-            <button>5</button>
-            <button>6</button>
-           
+      <button>4</button>
+      <button>5</button>
+      <button>6</button>
+      <button class="operator" aria-label="Subtract">-</button>
 
-            <button>1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>0</button>
+      <button>1</button>
+      <button>2</button>
+      <button>3</button>
+      <button class="operator" aria-label="Add">+</button>
 
-            <button>.</button>
-            <button class="equal">=</button>
-          
-        </div>
+      <button>0</button>
+      <button>.</button>
+      <button class="equal" aria-label="Equals">=</button>
     </div>
+  </div>
 
-    <script>
-        const display = document.querySelector('.display');
-        const buttons = document.querySelectorAll('.buttons button');
+  <script>
+    const display = document.querySelector('#display');
+    const buttons = document.querySelectorAll('.buttons button');
 
-        let currentInput = '';
-        let operator = null;
-        let previousValue = null;
+    let currentInput = '';
+    let operator = null;
+    let previousValue = null;
 
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                const value = button.textContent;
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const value = button.textContent;
 
-                if (isNaN(value) && value !== '.' && value !== '=') {
-                    handleOperator(value);
-                } else if (value === '.') {
-                    handleDecimal();
-                } else if (value === '=') {
-                    handleEqual();
-                } else {
-                    handleNumber(value);
-                }
-            });
-        });
-
-        function handleNumber(number) {
-            if (currentInput.length < 10) { // Limit input length
-                currentInput += number;
-                updateDisplay();
-            }
+        if (isNaN(value) && value !== '.' && value !== '=') {
+          handleOperator(value);
+        } else if (value === '.') {
+          handleDecimal();
+        } else if (value === '=') {
+          handleEqual();
+        } else {
+          handleNumber(value);
         }
+      });
+    });
 
-        function handleOperator(op) {
-            if (op === 'C') {
-                clearDisplay();
-                return;
-            }
+    function handleNumber(number) {
+      if (currentInput.length < 10) { // Limit input length
+        currentInput += number;
+        updateDisplay();
+      }
+    }
 
-            if (previousValue === null) {
-                previousValue = parseFloat(currentInput);
-            } else if (currentInput) {
-                calculate();
-            }
+    function handleOperator(op) {
+      if (op === 'C') {
+        clearDisplay();
+        return;
+      }
 
-            operator = op;
-            currentInput = '';
-            updateDisplay();
-        }
+      if (previousValue === null) {
+        previousValue = parseFloat(currentInput);
+      } else if (currentInput) {
+        calculate();
+      }
 
-        function handleDecimal() {
-            if (!currentInput.includes('.')) {
-                currentInput += '.';
-                updateDisplay();
-            }
-        }
+      operator = op;
+      currentInput = '';
+      updateDisplay();
+    }
 
-        function handleEqual() {
-            calculate();
-            operator = null;
-        }
+    function handleDecimal() {
+      if (!currentInput.includes('.')) {
+        currentInput += '.';
+        updateDisplay();
+      }
+    }
 
-        function calculate() {
-            if (operator === null || previousValue === null) return;
+    function handleEqual() {
+      calculate();
+      operator = null;
+    }
 
-            const currentValue = parseFloat(currentInput);
-            let result;
+    function calculate() {
+      if (operator === null || previousValue === null) return;
 
-            switch (operator) {
-                case '+':
-                    result = previousValue + currentValue;
-                    break;
-                case '-':
-                    result = previousValue - currentValue;
-                    break;
-                case '*':
-                    result = previousValue * currentValue;
-                    break;
-                case '/':
-                    if (currentValue === 0) {
-                        alert("Cannot divide by zero!");
-                        clearDisplay();
-                        return;
-                    }
-                    result = previousValue / currentValue;
-                    break;
-                default:
-                    return;
-            }
+      const currentValue = parseFloat(currentInput);
+      let result;
 
-            currentInput = String(result);
-            previousValue = null;
-            operator = null;
-            updateDisplay();
-        }
+      switch (operator) {
+        case '+':
+          result = previousValue + currentValue;
+          break;
+        case '-':
+          result = previousValue - currentValue;
+          break;
+        case '*':
+          result = previousValue * currentValue;
+          break;
+        case '/':
+          if (currentValue === 0) {
+            alert("Cannot divide by zero!");
+            clearDisplay();
+            return;
+          }
+          result = previousValue / currentValue;
+          break;
+        default:
+          return;
+      }
 
-        function updateDisplay() {
-            display.textContent = currentInput || '0';
-        }
+      currentInput = String(result);
+      previousValue = null;
+      operator = null;
+      updateDisplay();
+    }
 
-        function clearDisplay() {
-            currentInput = '';
-            operator = null;
-            previousValue = null;
-            updateDisplay();
-        }
-    </script>
+    function updateDisplay() {
+      display.textContent = currentInput || '0';
+    }
+
+    function clearDisplay() {
+      currentInput = '';
+      operator = null;
+      previousValue = null;
+      updateDisplay();
+    }
+  </script>
 </body>
 </html>
